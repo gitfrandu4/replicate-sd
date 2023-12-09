@@ -1,6 +1,3 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { NextResponse } from 'next/server';
-
 export async function GET(
   req: Request,
   {
@@ -23,9 +20,22 @@ export async function GET(
 
   if (response.status !== 200) {
     let error = await response.json();
-    return Response.json({ detail: error.detail });
+    const errorResponse = new Response(
+      JSON.stringify({ detail: error.detail }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    return errorResponse;
   }
 
   const prediction = await response.json();
-  return Response.json(prediction);
+
+  const newResponse = new Response(JSON.stringify({ ...prediction }), {
+    headers: { 'Content-Type': 'application/json' },
+    status: 201,
+  });
+
+  return newResponse;
 }

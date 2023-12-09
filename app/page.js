@@ -23,8 +23,9 @@ export default function Home() {
       }),
     });
     let prediction = await response.json();
-    if (response.status !== 200) {
-      setError(prediction.detail);
+
+    if (response.status !== 201) {
+      setError(prediction.error);
       return;
     }
     setPrediction(prediction);
@@ -36,11 +37,10 @@ export default function Home() {
       await sleep(1000);
       const response = await fetch('/api/predictions/' + prediction.id);
       prediction = await response.json();
-      if (response.status !== 200) {
+      if (response.status !== 201) {
         setError(prediction.detail);
         return;
       }
-      console.log({ prediction });
       setPrediction(prediction);
     }
   };
